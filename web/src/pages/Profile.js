@@ -21,7 +21,7 @@ function Profile() {
 
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:8080/api/auth/logout', {
+      await fetch('http://localhost:8083/api/auth/logout', {
         method: 'POST',
         credentials: 'include',
       });
