@@ -5,7 +5,7 @@ import backend.g5.dto.LoginRequest;
 import backend.g5.dto.UserResponse;
 import backend.g5.entity.User;
 import backend.g5.service.UserService;
-import jakarta.servlet.http.HttpSession;
+import backend.g5.config.JwtUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
@@ -18,9 +18,11 @@ import java.util.Optional;
 public class AuthController {
     
     private final UserService userService;
+    private final JwtUtil jwtUtil;
     
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
     
     @PostMapping("/register")
@@ -37,13 +39,17 @@ public class AuthController {
     }
     
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpSession session) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
             User user = userService.loginUser(request.getEmail(), request.getPassword());
-            session.setAttribute("userId", user.getUserId());
-            session.setAttribute("userEmail", user.getEmail());
             
-            UserResponse response = new UserResponse(user.getUserId(), user.getEmail(), user.getName(), user.getCreatedAt());
+            String token = jwtUtil.generateToken(user.getEmail(), user.getUserId());
+            UserResponse userResponse = new UserResponse(user.getUserId(), user.getEmail(), user.getName(), user.getCreatedAt());
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("user", userResponse);
+            response.put("token", token);
+            
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
@@ -53,31 +59,9 @@ public class AuthController {
     }
     
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpSession session) {
-        session.invalidate();
+    public ResponseEntity<?> logout() {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Logged out successfully");
         return ResponseEntity.ok(response);
-    }
-    
-    @GetMapping("/me")
-    public ResponseEntity<?> getCurrentUser(HttpSession session) {
-        try {
-            Long userId = (Long) session.getAttribute("userId");
-            if (userId == null) {
-                return ResponseEntity.status(401).body(Map.of("message", "Not authenticated"));
-            }
-            Optional<User> userOpt = userService.getUserById(userId);
-            if (userOpt.isEmpty()) {
-                return ResponseEntity.status(404).body(Map.of("message", "User not found"));
-            }
-            User user = userOpt.get();
-            UserResponse response = new UserResponse(user.getUserId(), user.getEmail(), user.getName(), user.getCreatedAt());
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(error);
-        }
     }
 }

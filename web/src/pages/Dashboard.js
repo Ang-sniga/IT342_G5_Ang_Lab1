@@ -22,7 +22,6 @@ function Dashboard() {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-          credentials: 'include',
         });
 
         if (response.ok) {
@@ -55,7 +54,6 @@ function Dashboard() {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
       });
 
       // Clear user data
