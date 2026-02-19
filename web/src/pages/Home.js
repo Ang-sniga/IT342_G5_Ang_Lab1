@@ -10,7 +10,7 @@ function Home() {
     <div className="home-container">
       <header className="home-header">
         <div className="nav-bar">
-          <h1 className="logo">Auth App</h1>
+          <h1 className="logo">Home Page</h1>
           <div className="nav-links">
             {isLoggedIn ? (
               <>
@@ -29,8 +29,7 @@ function Home() {
 
       <main className="home-main">
         <div className="hero-section">
-          <h2>Welcome to Auth App</h2>
-          <p>A simple authentication system with user registration and login</p>
+          <h2>Welcome to Home Page</h2>
           
           {!isLoggedIn ? (
             <div className="hero-buttons">
@@ -63,28 +62,21 @@ function Home() {
           <h3>Features</h3>
           <div className="features-grid">
             <div className="feature-card">
-              <h4>✓ User Registration</h4>
-              <p>Easy and secure registration process with email verification</p>
+              <h4>User Registration</h4>
             </div>
             <div className="feature-card">
-              <h4>✓ Secure Login</h4>
-              <p>Password encryption with BCrypt for maximum security</p>
+              <h4>Secure Login</h4>
             </div>
             <div className="feature-card">
-              <h4>✓ User Profile</h4>
-              <p>View and manage your profile information</p>
+              <h4>User Profile</h4>
             </div>
             <div className="feature-card">
-              <h4>✓ Session Management</h4>
-              <p>Secure session management with logout functionality</p>
+              <h4>Session Management</h4>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="home-footer">
-        <p>&copy; 2024 Auth App. All rights reserved.</p>
-      </footer>
     </div>
   );
 }

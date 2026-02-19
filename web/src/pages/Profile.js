@@ -8,25 +8,62 @@ function Profile() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user is logged in
-    const userString = localStorage.getItem('user');
-    if (!userString) {
-      navigate('/login');
-      return;
-    }
-    
-    setUser(JSON.parse(userString));
-    setLoading(false);
+    const fetchUserData = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:8083/api/user/me', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData);
+        } else {
+          // If token is invalid, redirect to login
+          localStorage.removeItem('user');
+          localStorage.removeItem('token');
+          localStorage.removeItem('isLoggedIn');
+          navigate('/login');
+        }
+      } catch (err) {
+        console.error('Error fetching user data:', err);
+        navigate('/login');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
   }, [navigate]);
 
   const handleLogout = async () => {
     try {
+<<<<<<< Updated upstream
       await fetch('http://localhost:8080/api/auth/logout', {
+=======
+      const token = localStorage.getItem('token');
+      await fetch('http://localhost:8083/api/auth/logout', {
+>>>>>>> Stashed changes
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
         credentials: 'include',
       });
 
       localStorage.removeItem('user');
+      localStorage.removeItem('token');
       localStorage.removeItem('isLoggedIn');
       navigate('/login');
     } catch (err) {

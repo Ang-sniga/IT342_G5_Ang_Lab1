@@ -5,6 +5,7 @@ import backend.g5.entity.User;
 import backend.g5.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,15 +23,14 @@ public class UserController {
     }
     
     @GetMapping("/me")
-    public ResponseEntity<?> getCurrentUser(HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        
-        if (userId == null) {
+    public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof Long)) {
             Map<String, String> error = new HashMap<>();
             error.put("message", "User not authenticated. Please login first.");
             return ResponseEntity.status(401).body(error);
         }
         
+        Long userId = (Long) authentication.getPrincipal();
         Optional<User> user = userService.getUserById(userId);
         
         if (user.isEmpty()) {
