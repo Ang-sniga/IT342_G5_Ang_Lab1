@@ -1,13 +1,7 @@
-<<<<<<< Updated upstream
-Backend: In-Progress
-Web: ToDo
-Mobile: ToDo
-docs: In-Progess
-=======
 Backend: Done
 Web: Done
 Mobile: In_Progress the backend
 docs: In-Progress
->>>>>>> Stashed changes
+
 
 
