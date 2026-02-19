@@ -48,12 +48,8 @@ function Dashboard() {
 
   const handleLogout = async () => {
     try {
-<<<<<<< Updated upstream
-      await fetch('http://localhost:8080/api/auth/logout', {
-=======
       const token = localStorage.getItem('token');
       await fetch('http://localhost:8083/api/auth/logout', {
->>>>>>> Stashed changes
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
